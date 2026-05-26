@@ -93,6 +93,21 @@
       line-height: 1.5;
     }
 
+    .time-info-box {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 16px;
+      padding: 18px;
+      margin: 0 auto 25px;
+      max-width: 600px;
+      line-height: 1.7;
+      backdrop-filter: blur(8px);
+    }
+
+    .time-info-box p {
+      margin: 6px 0;
+    }
+
     .timer-card {
       max-height: 0;
       overflow: hidden;
@@ -207,6 +222,11 @@
         font-size: 0.9rem;
       }
 
+      .time-info-box {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
+
       .timer-content {
         font-size: 1.5rem;
         padding: 20px;
@@ -242,7 +262,10 @@
     <section id="countdownPage" class="countdown-page hidden">
       <h1>Aaron and Milica</h1>
       <p id="selectedTimezone" class="selected-timezone"></p>
-      <p id="targetDateText" class="main-date"></p>
+      <div class="time-info-box">
+        <p><strong>Current time:</strong> <span id="currentTimeText"></span></p>
+        <p><strong>Counter ends at:</strong> <span id="targetDateText"></span></p>
+      </div>
 
       <div class="timer-buttons">
         <button onclick="showTimer('hours')">How many hours left?</button>
@@ -282,7 +305,7 @@
         : 'Central European Time';
 
       document.getElementById('selectedTimezone').textContent = 'Selected Time Zone: ' + timezoneName;
-      document.getElementById('targetDateText').textContent = 'Countdown ends on: ' + formatDate(targetDate, selectedTimezone);
+      updateTimeInfo();
     }
 
     function formatDate(date, timezone) {
@@ -304,7 +327,16 @@
       updateCountdown();
     }
 
+    function updateTimeInfo() {
+      if (!selectedTimezone) return;
+
+      const now = new Date();
+      document.getElementById('currentTimeText').textContent = formatDate(now, selectedTimezone);
+      document.getElementById('targetDateText').textContent = formatDate(targetDate, selectedTimezone);
+    }
+
     function updateCountdown() {
+      updateTimeInfo();
       if (!activeTimer) return;
 
       const now = new Date();
@@ -387,3 +419,4 @@
   </script>
 </body>
 </html>
+
