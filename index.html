@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aaron and Milica</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+    }
+
+    .text-box {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 18px;
+      padding: 25px;
+      margin: 0 auto 30px;
+      max-width: 650px;
+      line-height: 1.6;
+      backdrop-filter: blur(8px);
+    }
+
+    .timezone-options,
+    .timer-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      padding: 15px 25px;
+      border-radius: 14px;
+      background: white;
+      color: #1f1c2c;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s ease;
+      min-height: 48px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      background: #f0e6ff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .countdown-page {
+      animation: fadeIn 0.4s ease;
+    }
+
+    .selected-timezone {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .main-date {
+      margin-bottom: 25px;
+      font-size: 1rem;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .timer-card {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.4s ease;
+      margin: 0 auto;
+      max-width: 450px;
+      width: 100%;
+    }
+
+    .timer-card.active {
+      max-height: 180px;
+      opacity: 1;
+      margin-top: 20px;
+    }
+
+    .timer-content {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      padding: 25px;
+      font-size: 2rem;
+      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      word-break: break-word;
+    }
+
+    .timer-label {
+      display: block;
+      font-size: 1rem;
+      font-weight: normal;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    .back-btn {
+      margin-top: 35px;
+      background: transparent;
+      color: white;
+      border: 1px solid white;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        align-items: flex-start;
+        padding: 24px 18px;
+      }
+
+      .container {
+        max-width: 100%;
+        padding-top: 30px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+        line-height: 1.15;
+      }
+
+      .text-box {
+        padding: 22px;
+        font-size: 1rem;
+      }
+
+      .timezone-options,
+      .timer-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      button {
+        width: 100%;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 18px 14px;
+      }
+
+      .container {
+        padding-top: 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+
+      .text-box {
+        padding: 18px;
+        font-size: 0.95rem;
+        border-radius: 14px;
+      }
+
+      .selected-timezone {
+        font-size: 1rem;
+      }
+
+      .main-date {
+        font-size: 0.9rem;
+      }
+
+      .timer-content {
+        font-size: 1.5rem;
+        padding: 20px;
+      }
+
+      .timer-label {
+        font-size: 0.9rem;
+      }
+
+      .back-btn {
+        margin-top: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section id="homePage">
+      <h1>Aaron and Milica</h1>
+
+      <div class="text-box">
+        <p>
+          How much time is left before we see each other again? Let me answer that :)
+        </p>
+      </div>
+
+      <div class="timezone-options">
+        <button onclick="chooseTimezone('America/New_York')">Eastern Time</button>
+        <button onclick="chooseTimezone('Europe/Belgrade')">Central European Time</button>
+      </div>
+    </section>
+
+    <section id="countdownPage" class="countdown-page hidden">
+      <h1>Aaron and Milica</h1>
+      <p id="selectedTimezone" class="selected-timezone"></p>
+      <p id="targetDateText" class="main-date"></p>
+
+      <div class="timer-buttons">
+        <button onclick="showTimer('hours')">How many hours left?</button>
+        <button onclick="showTimer('days')">How many days left?</button>
+        <button onclick="showTimer('weeks')">How many weeks left?</button>
+        <button onclick="showTimer('saturdays')">How many Saturdays left?</button>
+      </div>
+
+      <div id="timerCard" class="timer-card">
+        <div class="timer-content">
+          <span id="timerValue">0</span>
+          <span id="timerLabel" class="timer-label"></span>
+        </div>
+      </div>
+
+      <button class="back-btn" onclick="goBack()">Back to Time Zone Options</button>
+    </section>
+  </main>
+
+  <script>
+    // Target time: July 9, 2026 at 3:55 PM Central European Time.
+    // In July, Central European locations use CEST, which is UTC+2.
+    // This equals July 9, 2026 at 9:55 AM Eastern Daylight Time.
+    const targetDate = new Date('2026-07-09T15:55:00+02:00');
+
+    let selectedTimezone = '';
+    let activeTimer = '';
+
+    function chooseTimezone(timezone) {
+      selectedTimezone = timezone;
+
+      document.getElementById('homePage').classList.add('hidden');
+      document.getElementById('countdownPage').classList.remove('hidden');
+
+      const timezoneName = timezone === 'America/New_York'
+        ? 'Eastern Time'
+        : 'Central European Time';
+
+      document.getElementById('selectedTimezone').textContent = 'Selected Time Zone: ' + timezoneName;
+      document.getElementById('targetDateText').textContent = 'Countdown ends on: ' + formatDate(targetDate, selectedTimezone);
+    }
+
+    function formatDate(date, timezone) {
+      return new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      }).format(date);
+    }
+
+    function showTimer(timerType) {
+      activeTimer = timerType;
+      document.getElementById('timerCard').classList.add('active');
+      updateCountdown();
+    }
+
+    function updateCountdown() {
+      if (!activeTimer) return;
+
+      const now = new Date();
+      const difference = targetDate - now;
+
+      const timerValue = document.getElementById('timerValue');
+      const timerLabel = document.getElementById('timerLabel');
+
+      if (difference <= 0) {
+        timerValue.textContent = '0';
+        timerLabel.textContent = 'The countdown is over!';
+        return;
+      }
+
+      const seconds = Math.floor(difference / 1000);
+      const hours = Math.floor(seconds / 3600);
+      const days = Math.floor(seconds / 86400);
+      const weeks = Math.floor(days / 7);
+      const saturdays = countSaturdaysLeft(new Date(), targetDate, selectedTimezone);
+
+      if (activeTimer === 'hours') {
+        timerValue.textContent = hours.toLocaleString();
+        timerLabel.textContent = 'hours left';
+      } else if (activeTimer === 'days') {
+        timerValue.textContent = days.toLocaleString();
+        timerLabel.textContent = 'days left';
+      } else if (activeTimer === 'weeks') {
+        timerValue.textContent = weeks.toLocaleString();
+        timerLabel.textContent = 'weeks left';
+      } else if (activeTimer === 'saturdays') {
+        timerValue.textContent = saturdays.toLocaleString();
+        timerLabel.textContent = 'Saturdays left';
+      }
+    }
+
+    function getDatePartsInTimezone(date, timezone) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'short'
+      }).formatToParts(date);
+
+      const result = {};
+      parts.forEach(part => {
+        if (part.type !== 'literal') {
+          result[part.type] = part.value;
+        }
+      });
+
+      return result;
+    }
+
+    function countSaturdaysLeft(startDate, endDate, timezone) {
+      let count = 0;
+      let current = new Date(startDate);
+
+      while (current < endDate) {
+        const parts = getDatePartsInTimezone(current, timezone);
+        if (parts.weekday === 'Sat') {
+          count++;
+        }
+
+        current.setDate(current.getDate() + 1);
+        current.setHours(12, 0, 0, 0);
+      }
+
+      return count;
+    }
+
+    function goBack() {
+      document.getElementById('countdownPage').classList.add('hidden');
+      document.getElementById('homePage').classList.remove('hidden');
+      document.getElementById('timerCard').classList.remove('active');
+      activeTimer = '';
+    }
+
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
